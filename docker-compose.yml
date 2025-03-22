@@ -1,0 +1,43 @@
+version: '3.9'
+
+networks:
+  nextcloud_network: # net nextcloud_network, --- puente ---
+
+volumes: # volume store for maria db and nextcloud.
+  db:
+  nextcloud:
+
+services:
+  db:
+    image: mariadb:10.6 # image maria db.
+    restart: always # try restart if exist an problem on set up. 
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    volumes:
+      - db:/var/lib/mysql # the volume db load in /var/lib/mysql.
+    networks:
+      - nextcloud_network # net nextcloud_network, --- puente ---
+    # enviroments vars.
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=password
+  app:
+    image: nextcloud # image for nextcloud.
+    restart: always # try restart if exist an problem on set up. 
+    # localhost port : container port
+    ports:
+      - 8080:80
+    # the service app linked to the service db
+    depends_on:
+      - db
+    volumes:
+      - nextcloud:/var/www/html # the volume nextcloud load in /var/www/html.
+    networks:
+      - nextcloud_network # net type nextcloud_network, --- puente ---
+    # enviroments vars.
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=password
