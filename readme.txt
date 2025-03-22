@@ -4,8 +4,10 @@
 # --- ***                                         *** --- #
 
 --- youtube ---
+https://youtu.be/0TqGVbH0FRc
 
 --- github repository ---
+https://github.com/ggvhcs/cloud
 
 Develop Enviroment:
 ---
